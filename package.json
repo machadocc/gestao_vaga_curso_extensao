@@ -1,0 +1,13 @@
+{
+  "name": "gestao-vagas-extensao",
+  "version": "1.0.0",
+  "description": "Sistema de Gestão de Vagas em Cursos de Extensão - Programação Orientada a Eventos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  }
+}
