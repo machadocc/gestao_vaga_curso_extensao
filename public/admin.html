@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Administração do Sistema</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<h1>Painel do Administrador</h1>
+<button id="btnAtivar">Ativar Sistema</button>
+<button id="btnDesativar">Desativar Sistema</button>
+<p id="statusAdmin" class="status inativo">Status Atual: Inativo</p>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    const btnAtivar = document.getElementById('btnAtivar');
+    const btnDesativar = document.getElementById('btnDesativar');
+    const statusAdmin = document.getElementById('statusAdmin');
+
+    btnAtivar.addEventListener('click', () => socket.emit('sistema.ativar'));
+    btnDesativar.addEventListener('click', () => socket.emit('sistema.desativar'));
+
+    socket.on('sistema.status', (ativo) => {
+        statusAdmin.textContent = 'Status Atual: ' + (ativo ? 'Ativo' : 'Inativo');
+        statusAdmin.className = ativo ? 'status ativo' : 'status inativo';
+    });
+</script>
+</body>
+</html>

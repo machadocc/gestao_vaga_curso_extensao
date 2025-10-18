@@ -1,36 +1,47 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
-    padding: 20px;
+    margin: 20px;
 }
 
-h1 {
-    color: #333;
+.status {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.status.ativo {
+    color: green;
+}
+
+.status.inativo {
+    color: red;
 }
 
 .curso {
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 15px;
+    border: 1px solid #ccc;
+    padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
 }
 
+.curso h2 {
+    margin: 0 0 5px 0;
+}
+
+.curso p {
+    margin: 3px 0;
+}
+
+.curso input {
+    margin-right: 5px;
+}
+
 button {
     padding: 5px 10px;
-    background-color: #0066cc;
-    color: white;
-    border: none;
-    border-radius: 3px;
+    margin: 2px;
     cursor: pointer;
 }
 
 button:disabled {
     background-color: #ccc;
-}
-
-footer {
-    margin-top: 30px;
-    text-align: center;
-    color: #555;
+    cursor: not-allowed;
 }

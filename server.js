@@ -1,51 +1,45 @@
 const express = require('express');
-const app = express();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-const PORT = 3000;
+const http = require('http');
+const { Server } = require('socket.io');
+const path = require('path');
 
-app.use(express.static('public'));
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
+let sistemaAtivo = false;
 
 let cursos = [
-    { id: 1, nome: 'Curso de Web', vagas: 3, inscritos: [] },
-    { id: 2, nome: 'Curso de Python', vagas: 2, inscritos: [] },
-    { id: 3, nome: 'Curso de UX/UI', vagas: 1, inscritos: [] },
+    { id: 1, nome: 'Curso de JavaScript', vagas: 5, inscritos: [] },
+    { id: 2, nome: 'Curso de Python', vagas: 3, inscritos: [] },
+    { id: 3, nome: 'Curso de HTML/CSS', vagas: 4, inscritos: [] }
 ];
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 io.on('connection', (socket) => {
-    console.log('Usuário conectado:', socket.id);
+    console.log('Novo cliente conectado');
 
-    socket.emit('sistema.iniciado', cursos);
+    socket.emit('sistema.status', sistemaAtivo);
 
-    socket.on('vaga.reservada', ({ cursoId, nome }) => {
-        const curso = cursos.find(c => c.id === cursoId);
+    socket.on('sistema.ativar', () => {
+        sistemaAtivo = true;
+        io.emit('sistema.status', sistemaAtivo);
+        console.log('Sistema ativado');
+    });
 
-        if (!curso || curso.vagas <= 0) {
-            socket.emit('erro.operacao', 'Vaga indisponível');
-            return;
-        }
-
-        curso.vagas--;
-        const reserva = { nome, tempo: Date.now() };
-        curso.inscritos.push(reserva);
-
-        io.emit('vaga.confirmada', cursos);
-
-        setTimeout(() => {
-            const index = curso.inscritos.findIndex(i => i.nome === nome && Date.now() - i.tempo >= 5000);
-            if (index !== -1) {
-                curso.inscritos.splice(index, 1);
-                curso.vagas++;
-                io.emit('vaga.expirada', cursos);
-            }
-        }, 5000);
+    socket.on('sistema.desativar', () => {
+        sistemaAtivo = false;
+        io.emit('sistema.status', sistemaAtivo);
+        console.log('Sistema desativado');
     });
 
     socket.on('disconnect', () => {
-        console.log('Usuário desconectado:', socket.id);
+        console.log('Cliente desconectado');
     });
 });
 
-http.listen(PORT, () => {
+const PORT = 3000;
+server.listen(PORT, () => {
     console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
